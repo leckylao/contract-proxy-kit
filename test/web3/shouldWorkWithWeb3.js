@@ -20,6 +20,8 @@ function shouldWorkWithWeb3(Web3, defaultAccount, safeOwner, gnosisSafeProviderB
       testedTxObjProps: 'the PromiEvent for the transaction and the hash',
       getBalance: (address) => web3Box[0].eth.getBalance(address)
         .then((balance) => web3Box[0].utils.toBN(balance)),
+      getCode: (address) => web3Box[0].eth.getCode(address),
+      keccak256: (hex) => web3Box[0].utils.keccak256(hex),
       getGasUsed: ({ promiEvent }) => new Promise(
         (resolve, reject) => promiEvent
           .on('confirmation', (confNumber, receipt) => resolve(receipt.gasUsed))

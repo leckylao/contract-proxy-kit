@@ -19,6 +19,8 @@ function shouldWorkWithEthers(ethers, defaultAccount, safeOwner, gnosisSafeProvi
       fromWei: (amount) => Number(ethers.utils.formatUnits(amount.toString(), 'ether')),
       getTransactionCount: signer.provider.getTransactionCount.bind(signer.provider),
       getBalance: signer.provider.getBalance.bind(signer.provider),
+      getCode: (address) => signer.provider.getCode(address),
+      keccak256: (hex) => ethers.utils.keccak256(hex),
       getGasUsed: async ({ transactionResponse }) => (
         await transactionResponse.wait()
       ).gasUsed.toNumber(),

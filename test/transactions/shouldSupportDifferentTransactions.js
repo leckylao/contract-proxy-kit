@@ -2,6 +2,7 @@ const makeConditionalTokensIdHelpers = require('@gnosis.pm/conditional-tokens-co
 const Multistep = artifacts.require('Multistep');
 const ConditionalTokens = artifacts.require('ConditionalTokens');
 const ERC20Mintable = artifacts.require('ERC20Mintable');
+const CPKFactory = artifacts.require('CPKFactory');
 
 const CPK = require('../..');
 
@@ -15,6 +16,8 @@ function shouldSupportDifferentTransactions({
   fromWei,
   getTransactionCount,
   getBalance,
+  getCode,
+  keccak256,
   getGasUsed,
   testedTxObjProps,
   checkTxObj,
@@ -300,6 +303,24 @@ function shouldSupportDifferentTransactions({
 
       gasCosts.should.be.equal(gasPrice * gasUsed);
     });
+
+    if (!ownerIsRecognizedContract) {
+      it('deploys proxy which matches factory specs', async () => {
+        const cpkFactory = await CPKFactory.deployed();
+        const idPrecompile = `0x${'0'.repeat(39)}4`;
+        await cpk.execTransactions([{
+          operation: CPK.CALL,
+          to: idPrecompile,
+          value: 0,
+          data: '0x',
+        }], { gasLimit: defaultGasLimit });
+        const proxyRuntimeCode = await getCode(cpk.address);
+        await cpkFactory.proxyRuntimeCode()
+          .should.eventually.equal(proxyRuntimeCode);
+        await cpkFactory.proxyRuntimeCodeHash()
+          .should.eventually.equal(keccak256(proxyRuntimeCode));
+      });
+    }
   });
 }
 
