@@ -7,7 +7,7 @@ const Multistep = artifacts.require('Multistep');
 const CPK = require('../..');
 const CPKWeb3Provider = require('../../src/providers/CPKWeb3Provider');
 const shouldSupportDifferentTransactions = require('../transactions/shouldSupportDifferentTransactions');
-const { defaultGasLimit, toConfirmationPromise } = require('../utils');
+const { toConfirmationPromise } = require('../utils');
 
 function shouldWorkWithWeb3(Web3, defaultAccount, safeOwner, gnosisSafeProviderBox) {
   describe(`with Web3 version ${(new Web3()).version}`, () => {
@@ -98,7 +98,7 @@ function shouldWorkWithWeb3(Web3, defaultAccount, safeOwner, gnosisSafeProviderB
           const idPrecompile = `0x${'0'.repeat(39)}4`;
           await cpk.execTransactions([{
             to: idPrecompile,
-          }], { gasLimit: defaultGasLimit });
+          }]);
         });
 
         shouldSupportDifferentTransactions({

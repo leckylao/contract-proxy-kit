@@ -7,7 +7,7 @@ const Multistep = artifacts.require('Multistep');
 const CPK = require('../..');
 const CPKEthersProvider = require('../../src/providers/CPKEthersProvider');
 const shouldSupportDifferentTransactions = require('../transactions/shouldSupportDifferentTransactions');
-const { defaultGasLimit, toConfirmationPromise } = require('../utils');
+const { toConfirmationPromise } = require('../utils');
 
 function shouldWorkWithEthers(ethers, defaultAccount, safeOwner, gnosisSafeProviderBox) {
   describe(`with ethers version ${ethers.version}`, () => {
@@ -107,7 +107,7 @@ function shouldWorkWithEthers(ethers, defaultAccount, safeOwner, gnosisSafeProvi
           const idPrecompile = `0x${'0'.repeat(39)}4`;
           await cpk.execTransactions([{
             to: idPrecompile,
-          }], { gasLimit: defaultGasLimit });
+          }]);
         });
 
         shouldSupportDifferentTransactions({
