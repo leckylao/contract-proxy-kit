@@ -98,9 +98,12 @@ class CPKWeb3Provider extends CPKProvider {
   static async attemptTransaction(contract, viewContract, methodName, params, sendOptions, err) {
     if (!(await contract.methods[methodName](...params).call(sendOptions))) throw err;
 
-    const promiEvent = contract.methods[methodName](...params).send(sendOptions);
+    const txObject = contract.methods[methodName](...params);
+    const gasLimit = sendOptions.gasLimit || await txObject.estimateGas(sendOptions)
+    const actualSendOptions = { gasLimit, ...sendOptions };
+    const promiEvent = txObject.send(actualSendOptions);
 
-    return this.promiEventToPromise(promiEvent, sendOptions);
+    return this.promiEventToPromise(promiEvent, actualSendOptions);
   }
 
   encodeAttemptTransaction(contractAbi, methodName, params) {
