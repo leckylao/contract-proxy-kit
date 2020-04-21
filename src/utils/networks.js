@@ -9,9 +9,10 @@ const defaultNetworks = {
   // rinkeby
   4: {
     masterCopyAddress: '0x34CfAC646f301356fAa8B21e94227e3583Fe3F5F',
-    proxyFactoryAddress: '0x336c19296d3989e9e0c2561ef21c964068657c38',
-    multiSendAddress: '0xB522a9f781924eD250A11C54105E51840B138AdD',
-    fallbackHandlerAddress: '0x40A930851BD2e590Bd5A5C981b436de25742E980',
+    proxyFactoryAddress: '0x76E2cFc1F5Fa8F6a5b3fC4c8F4788F0116861F9B',
+    multiSendAddress: '0x8D29bE29923b68abfDD21e541b9374737B49cdAD',
+    fallbackHandlerAddress: '0xd5D82B6aDDc9027B22dCA772Aa68D5d74cdBdF44',
+    CreateAndAddModulesAddress: '0xF61A721642B0c0C8b334bA3763BA1326F53798C0'
   },
   // goerli
   5: {
