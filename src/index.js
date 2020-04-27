@@ -139,6 +139,13 @@ const CPK = class CPK {
     return cpk;
   }
 
+  static async load(opts, safeAddress) {
+    if (opts == null) throw new Error('missing options');
+    const cpk = new CPK(opts);
+    await cpk.init(safeAddress);
+    return cpk;
+  }
+
   constructor({
     web3,
     ethers,
@@ -165,7 +172,7 @@ const CPK = class CPK {
     };
   }
 
-  async init() {
+  async init(safeAddress = undefined) {
     const networkID = this.apiType === 'web3'
       ? await this.web3.eth.net.getId()
       : (await this.signer.provider.getNetwork()).chainId;
@@ -211,17 +218,22 @@ const CPK = class CPK {
           [ownerAccount, predeterminedSaltNonce],
         ));
 
-        this.contract = new this.web3.eth.Contract(safeAbi, this.web3.utils.toChecksumAddress(
-          this.web3.utils.soliditySha3(
-            '0xff',
-            { t: 'address', v: this.proxyFactory.options.address },
-            { t: 'bytes32', v: create2Salt },
+        if (safeAddress === undefined){
+          this.contract = new this.web3.eth.Contract(safeAbi, this.web3.utils.toChecksumAddress(
             this.web3.utils.soliditySha3(
-              await this.proxyFactory.methods.proxyCreationCode().call(),
-              this.web3.eth.abi.encodeParameters(['address'], [this.masterCopyAddress]),
-            ),
-          ).slice(-40),
-        ));
+              '0xff',
+              { t: 'address', v: this.proxyFactory.options.address },
+              { t: 'bytes32', v: create2Salt },
+              this.web3.utils.soliditySha3(
+                await this.proxyFactory.methods.proxyCreationCode().call(),
+                this.web3.eth.abi.encodeParameters(['address'], [this.masterCopyAddress]),
+              ),
+            ).slice(-40),
+          ));
+        }else{
+          this.contract = new this.web3.eth.Contract(safeAbi, safeAddress);
+        }
+
       }
     } else if (this.apiType === 'ethers') {
       const abiToViewAbi = (abi) => abi.map(({
